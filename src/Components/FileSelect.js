@@ -1,15 +1,17 @@
 import React from "react";
-import XLSX, { workbook } from "xlsx";
+import XLSX from "xlsx";
 class FileSelect extends React.Component {
   state = {
     name: "",
     path: "",
     size: "",
-    jsonData: ""
+    jsonData: "",
+    Columns: [],
+    FileObject: {}
   };
 
   sendDataToParent = () => {
-    if (this.state.name !== "" || this.state.name != false) {
+    if (this.state.name !== "" || this.state.name !== false) {
       console.log("sending data to parent");
       var Exceldata = this.state;
       this.props.SelectedExcel(Exceldata);
@@ -27,8 +29,11 @@ class FileSelect extends React.Component {
 
     var files = e.target.files,
       f = files[0];
-    this.setState({ ...this.state, name: f.name, path: f.path, size: f.size });
     console.log("FIle got is : \n", f);
+    console.log("file type :", typeof f);
+
+    var columnList;
+    var newthis = this;
 
     var reader = new FileReader();
     reader.onload = function(e) {
@@ -42,22 +47,14 @@ class FileSelect extends React.Component {
         header: 1
       });
 
-      if (dataParse !== undefined || dataParse !== "") {
-        console.log(
-          "\x1b[31m%s\x1b[0m",
-          "the json to work with is :\n",
-          dataParse.length,
-          "\n"
-        );
-
-        dataParse.forEach(element => {
-          if (element[0] === "Enterprise" && element[4] == "2665.50") {
-            console.log("record got is ", element);
-          }
-        });
-      }
-
-      // setFileUploaded(dataParse);
+      columnList = dataParse[0];
+      newthis.setState({
+        Columns: columnList,
+        name: f.name,
+        path: f.path,
+        size: f.size,
+        FileObject: f
+      });
     };
     reader.readAsBinaryString(f);
   };
@@ -65,16 +62,32 @@ class FileSelect extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div className="container jumbotron ">
-          <label>Please select Excel Sheet</label>
-          <br />
-          <input
-            type="file"
-            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-            onChange={this.readExcel}
-          ></input>
-
-          <button onClick={this.sendDataToParent}>Start</button>
+        <div className="input-group mb-3">
+          <div className="custom-file">
+            <input
+              type="file"
+              onChange={this.readExcel}
+              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              className="custom-file-input"
+              id="inputGroupFile02"
+            />
+            <label
+              className="custom-file-label"
+              for="inputGroupFile02"
+              aria-describedby="inputGroupFileAddon02"
+            >
+              Choose file
+            </label>
+          </div>
+          <div className="input-group-append">
+            <span
+              onClick={this.sendDataToParent}
+              className="input-group-text"
+              id="inputGroupFileAddon02"
+            >
+              Upload
+            </span>
+          </div>
         </div>
       </React.Fragment>
     );

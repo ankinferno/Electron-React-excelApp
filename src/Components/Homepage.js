@@ -1,25 +1,30 @@
 import React, { Component } from "react";
 import FileSelect from "./FileSelect";
-import SingleRecord from './SingleRecord';
+import { Link } from 'react-router-dom'
 
 class Homepage extends Component {
     state = {
         name: "",
         path: "",
         size: "",
-        jsonData: ""
+        columnlist: [],
+        FileObject: {}
     };
 
     constructor(props) {
         super(props);
-        this.sometext = ":( no";
+        this.flag = false;
+        this.Options = []
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevState.name !== this.state.name) {
-            console.log("State updated: in parent");
-            this.sometext = "<p>YEahs</p>";
-            console.log(" value in sometext now : ", this.sometext);
+            console.log("\nState updated: in parent");
+            console.log("state in homepage: ", this.state);
+            this.flag = true;
+            console.log("columnlist in homepage: ", this.state.columnlist, "\n type is : ", typeof (this.state.columnlist));
+            console.log("columnlist[0] in homepage: ", this.state.columnlist[0]);
+
         }
     }
 
@@ -29,17 +34,25 @@ class Homepage extends Component {
             name: f.name,
             path: f.path,
             size: f.size,
-            jsonData: f.jsonData
+            columnlist: [...f.Columns],
+            FileObject: f.FileObject
         });
+
+        this.Options = f.Columns;
+
     };
+
+    //created SingleRecord for work , but couldnt pass props
 
     render() {
         return (
             <React.Fragment>
-                <div style={{ margintop: "5px" }} className="container">
-                    <FileSelect SelectedExcel={this.checkExcel} />
+                <br></br>
+                <br></br>
+                <div className="container">
+                    <FileSelect SelectedExcel={this.checkExcel} style={{}} />
                 </div>
-                <hr />
+
                 <div className="container">
                     {this.state.name === "" ? (
                         <p>nothing selected yet</p>
@@ -52,24 +65,42 @@ class Homepage extends Component {
                             </div>
 
                         )}
-                    <hr />
                 </div>
 
-                <div className="jumbotron container" style={{ height: "100%" }}>
+                <div className="jumbotron container">
 
-                    {this.state.name === "" ? (
-                        <p></p>
-                    ) : (
+                    {this.state.name.length > 3 ? <React.Fragment>
 
-                            <div className="border border-dark">
-                                //show column for entering into and search
-                                <SingleRecord />
-                            </div>
+                        <ul className="list-group-horizontal-sm">
 
-                        )}
+
+                            {
+                                this.state.columnlist.map((item, index) => (
+                                    <li className="list-group-item" key={item}>
+                                        {item}</li>
+                                ))
+                            }
+                        </ul>
+
+
+                        <hr />
+                        <li>
+                            <Link to={{
+                                pathname: "/Record",
+                                state: {
+                                    data: this.state.columnlist,
+                                    File: this.state.FileObject
+                                }
+
+                            }}>Find students record</Link>
+                        </li>
+                    </React.Fragment> : <p>could nt do</p>}
+
+
+
 
                 </div>
-            </React.Fragment>
+            </React.Fragment >
         );
     }
 }

@@ -13,7 +13,7 @@ class Header extends React.Component {
             height: "2.5rem"
           }}
         >
-          <p style={{ marginTop: "10px" }}>Welcome</p>
+          <p>Welcome</p>
         </section>
       </React.Fragment>
     );
