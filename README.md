@@ -1,3 +1,7 @@
+This app is React-electron based app . it reads table/excel and prints marksheet.This app was originally planned for windows . 
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
